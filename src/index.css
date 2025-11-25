@@ -1,0 +1,47 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.active {
+  @apply text-white bg-primary;
+}
+
+.active svg {
+  @apply text-white;
+}
+
+h1 {
+  font-size: 2.25rem; /* Example for h1 */
+  line-height: 2.5rem; /* Example line height for h1 */
+  font-weight: 700; /* Bold */
+}
+
+h2 {
+  font-size: 1.875rem; /* Example for h2 */
+  line-height: 2.25rem; /* Example line height for h2 */
+  font-weight: 600; /* Semi-bold */
+}
+
+h3 {
+  font-size: 1.5rem; /* Example for h3 */
+  line-height: 2rem; /* Example line height for h3 */
+  font-weight: 500; /* Medium */
+}
+
+h4 {
+  font-size: 1.25rem; /* Example for h4 */
+  line-height: 1.75rem; /* Example line height for h4 */
+  font-weight: 400; /* Normal */
+}
+
+h5 {
+  font-size: 1.125rem; /* Example for h5 */
+  line-height: 1.5rem; /* Example line height for h5 */
+  font-weight: 400; /* Normal */
+}
+
+h6 {
+  font-size: 1rem; /* Example for h6 */
+  line-height: 1.25rem; /* Example line height for h6 */
+  font-weight: 400; /* Normal */
+}
