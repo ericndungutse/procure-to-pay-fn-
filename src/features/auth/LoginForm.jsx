@@ -17,7 +17,14 @@ function LoginForm() {
     mutationFn: ({ email, password }) => loginApi(email, password),
 
     onSuccess: (data) => {
-      queryClient.setQueryData(['user'], { user: data.data.user, token: data.data.access_token });
+      const token = data?.data?.access_token;
+      const userObj = data?.data?.user;
+      queryClient.setQueryData(['user'], { user: userObj, token });
+      try {
+        if (token) localStorage.setItem('token', token);
+      } catch (e) {
+        console.debug('localStorage unavailable', e);
+      }
       navigate('/account', { replace: true });
     },
 

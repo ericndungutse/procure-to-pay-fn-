@@ -1,10 +1,15 @@
 import { Navigate } from 'react-router-dom';
 import { useUser } from '../hooks/useUser';
+import LoadingSpinner from './LoadingSpinner';
 
 export const Protect = ({ children }) => {
-  const user = useUser();
+  const { user, isLoading, isError } = useUser();
 
-  if (!user.user) {
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (isError || !user) {
     return <Navigate to='/' replace />;
   }
 
