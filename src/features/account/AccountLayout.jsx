@@ -13,7 +13,7 @@ export default function AccountLayout() {
           <UserProfile />
         </div>
 
-        <div className='overflow-auto py-4 px-6 h-full'>
+        <div className='overflow-auto py-4 px-12 h-full'>
           <Outlet />
         </div>
       </main>

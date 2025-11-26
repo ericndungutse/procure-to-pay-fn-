@@ -90,7 +90,7 @@ export default function Dashboard() {
   const handleReceiptUpload = (req, file) => file && alert(`Receipt "${file.name}" uploaded for ${req.title}`);
 
   return (
-    <div className='flex flex-col gap-4 px-6'>
+    <div className='flex flex-col gap-4'>
       <section className='bg-white rounded-xl shadow p-6'>
         <div className='flex items-start justify-between'>
           <div>
