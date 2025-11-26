@@ -1,36 +1,30 @@
-import { HiArrowRightOnRectangle } from 'react-icons/hi2';
+// src/components/UserProfile.jsx
 import { useUser } from '../hooks/useUser';
-import { useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 
-function UserProfile() {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const user = useUser();
-
-  const handleLogout = () => {
-    queryClient.clear();
-    navigate('/');
-  };
-
-  const src =
-    user?.user?.user?.profileImg === 'user/profile2.jpg' ? '/default-user.webp' : user?.user?.user?.profileImg;
+export default function UserProfile() {
+  const {
+    user: { user },
+  } = useUser();
 
   return (
-    <div className='flex gap-4 items-center '>
-      <div className='flex gap-2 items-center'>
-        <img
-          src={src}
-          alt='User Avatar'
-          className='block w-9 h-9 object-cover object-center rounded-full outline outline-2 outline-gray-200'
-        />
-        <span className='font-medium text-base text-gray-600'>{user?.user?.user?.firstName}</span>
+    <div className='w-full flex items-center justify-between'>
+      {/* LEFT SIDE — System title */}
+      <div>
+        <h1 className='text-xl font-semibold text-gray-800'>Procure-to-Pay</h1>
+        <p className='text-xs text-gray-500'>Mini system — IST assessment</p>
       </div>
-      <button onClick={handleLogout}>
-        {<HiArrowRightOnRectangle className='h-6 w-6 text-primary hover:text-primary-light' />}
-      </button>
+
+      {/* RIGHT SIDE — User info */}
+      <div className='flex items-center gap-3'>
+        <div className='text-right'>
+          <div className='text-sm font-medium text-gray-800'>{user.fullname}</div>
+          <div className='text-xs text-gray-500'>{user.email}</div>
+        </div>
+
+        <div className='w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-semibold text-gray-700'>
+          {user.fullname?.charAt(0) ?? user.username?.charAt(0) ?? 'U'}
+        </div>
+      </div>
     </div>
   );
 }
-
-export default UserProfile;
