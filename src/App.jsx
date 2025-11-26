@@ -4,6 +4,7 @@ import AccountLayout from './features/account/AccountLayout';
 import { Protect } from './components/Protect';
 import Dashboard from './pages/Dashboard';
 import PurchaseRequests from './pages/PurchaseRequests';
+import PurchaseRequestDetails from './pages/PurchaseRequestDetails';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route index element={<Navigate replace to='dashboard' />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='requests' element={<PurchaseRequests />} />
+          <Route path='requests/:id' element={<PurchaseRequestDetails />} />
         </Route>
         <Route path='/' element={<Login />} />
       </Routes>
