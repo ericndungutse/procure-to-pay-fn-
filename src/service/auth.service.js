@@ -43,3 +43,31 @@ export const getMe = async () => {
     throw new Error(message);
   }
 };
+
+export const logoutApi = async () => {
+  try {
+    let token = null;
+    try {
+      token = localStorage.getItem('token');
+    } catch (e) {
+      // localStorage unavailable
+    }
+
+    if (!token) throw new Error('No token');
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/accounts/logout`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    const message = error?.response?.data?.detail || error?.message || 'Logout failed';
+    throw new Error(message);
+  }
+};
