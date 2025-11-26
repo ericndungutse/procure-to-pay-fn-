@@ -5,16 +5,20 @@ import VerticalFormRow from '../../components/VerticalFormRow';
 import Button from '../../components/Button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { loginApi } from '../../service/auth.service';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
   const [errorMessane, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
+
   const { isPending, mutate: login } = useMutation({
     mutationFn: ({ email, password }) => loginApi(email, password),
 
     onSuccess: (data) => {
       queryClient.setQueryData(['user'], { user: data.data.user, token: data.data.access_token });
+      navigate('/account', { replace: true });
     },
 
     onError: (err) => setErrorMessage(err.message),
