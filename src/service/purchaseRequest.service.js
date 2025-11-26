@@ -64,13 +64,9 @@ export const approvePurchaseRequest = async (token, id) => {
 
 export const rejectPurchaseRequest = async (token, id, payload = {}) => {
   try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/requests/${id}/reject/`,
-      payload,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/requests/${id}/reject/`, payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     return response.data.data || response.data;
   } catch (error) {

@@ -43,7 +43,7 @@ export default function DropDownManue({ resourceId, dropdownOptions }) {
                   setIsOpen(false);
                 }}
               >
-                <HiEye className='size-[1rem] text-gray-400 group-hover:text-white' /> Details
+                <HiEye className='size-[1rem] text-secondary-light group-hover:text-white' /> Details
               </button>
             </li>
           )}
@@ -58,7 +58,7 @@ export default function DropDownManue({ resourceId, dropdownOptions }) {
                   setSearchParams(searchParams);
                 }}
               >
-                <HiPencil className='size-[1rem] text-gray-400 group-hover:text-white' /> Edit
+                <HiPencil className='size-[1rem] text-secondary-light group-hover:text-white' /> Edit
               </button>
             </li>
           )}
@@ -73,7 +73,7 @@ export default function DropDownManue({ resourceId, dropdownOptions }) {
                   setSearchParams(searchParams);
                 }}
               >
-                <MdOutlineImage className='size-[1rem] text-gray-400 group-hover:text-white' />
+                <MdOutlineImage className='size-[1rem] text-secondary-light group-hover:text-white' />
                 Update Image
               </button>
             </li>
@@ -89,7 +89,7 @@ export default function DropDownManue({ resourceId, dropdownOptions }) {
                   setSearchParams(searchParams);
                 }}
               >
-                <HiTrash className='size-[1rem] text-gray-400 group-hover:text-white' />
+                <HiTrash className='size-[1rem] text-secondary-light group-hover:text-white' />
                 Delete
               </button>
             </li>

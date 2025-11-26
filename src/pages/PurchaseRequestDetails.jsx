@@ -50,7 +50,56 @@ export default function PurchaseRequestDetails() {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className='flex flex-col gap-6'>
+        <div className='h-8 w-1/3 bg-gray-200 rounded animate-pulse' />
+
+        <div className='rounded-md overflow-hidden shadow-sm'>
+          <div className='bg-primary text-white px-6 py-4 flex items-center justify-between'>
+            <div className='flex items-center gap-4'>
+              <div className='h-6 w-48 bg-white/30 rounded animate-pulse' />
+              <div className='h-4 w-80 bg-white/20 rounded animate-pulse' />
+            </div>
+            <div className='text-right'>
+              <div className='h-4 w-32 bg-white/30 rounded animate-pulse mb-2' />
+              <div className='h-6 w-24 bg-white/40 rounded animate-pulse' />
+            </div>
+          </div>
+
+          <div className='bg-white p-6 border-t'>
+            <div className='grid grid-cols-2 gap-6'>
+              <div className='space-y-4'>
+                <div className='h-4 w-40 bg-gray-200 rounded animate-pulse' />
+                <div className='h-4 w-full bg-gray-200 rounded animate-pulse' />
+                <div className='h-4 w-2/3 bg-gray-200 rounded animate-pulse' />
+              </div>
+              <div className='space-y-4'>
+                <div className='h-4 w-32 bg-gray-200 rounded animate-pulse' />
+                <div className='h-4 w-full bg-gray-200 rounded animate-pulse' />
+                <div className='h-4 w-1/2 bg-gray-200 rounded animate-pulse' />
+              </div>
+            </div>
+
+            <div className='mt-6 bg-yellow-50 border border-yellow-100 rounded-md p-4 flex items-center justify-between'>
+              <div className='flex items-center gap-3'>
+                <div className='h-6 w-6 bg-yellow-200 rounded animate-pulse' />
+                <div>
+                  <div className='h-3 w-28 bg-yellow-100 rounded animate-pulse' />
+                  <div className='h-5 w-36 bg-yellow-200 rounded animate-pulse mt-2' />
+                </div>
+              </div>
+              <div className='h-4 w-32 bg-yellow-100 rounded animate-pulse' />
+            </div>
+          </div>
+        </div>
+
+        <div className='flex items-center justify-end gap-3'>
+          <div className='h-8 w-20 bg-gray-200 rounded animate-pulse' />
+          <div className='h-8 w-28 bg-gray-200 rounded animate-pulse' />
+        </div>
+      </div>
+    );
   if (error) return <div className='text-red-600'>Error: {error.message}</div>;
 
   const pr = data?.purchase_request || data;
@@ -113,7 +162,7 @@ export default function PurchaseRequestDetails() {
           <div className='grid grid-cols-2 gap-6'>
             <div className='space-y-3'>
               <div className='flex items-center gap-3'>
-                <HiUser className='text-gray-400 w-5 h-5' />
+                <HiUser className='text-secondary-light w-5 h-5' />
                 <div>
                   <div className='text-sm text-gray-500'>Requested by</div>
                   <div className='font-medium'>{pr?.created_by_name || pr?.created_by}</div>
@@ -121,36 +170,75 @@ export default function PurchaseRequestDetails() {
               </div>
 
               <div className='flex items-center gap-3'>
-                <HiChatBubbleLeft className='text-gray-400 w-5 h-5' />
+                <HiChatBubbleLeft className='text-secondary-light w-5 h-5' />
                 <div>
                   <div className='text-sm text-gray-500'>Notes</div>
                   <div className='font-medium'>{pr?.notes || pr?.description || '-'}</div>
                 </div>
               </div>
-            </div>
-
-            <div className='space-y-3'>
-              <div className='flex items-center gap-3'>
-                <HiDocumentText className='text-gray-400 w-5 h-5' />
-                <div>
-                  <div className='text-sm text-gray-500'>Proforma</div>
-                  <div>
-                    {pr?.proforma ? (
-                      <a className='text-primary-color underline' target='_blank' rel='noreferrer' href={pr.proforma}>
-                        View Proforma
-                      </a>
-                    ) : (
-                      <span className='text-gray-500'>No proforma</span>
-                    )}
-                  </div>
-                </div>
-              </div>
 
               <div className='flex items-center gap-3'>
-                <HiCalendar className='text-gray-400 w-5 h-5' />
+                <HiCalendar className='text-secondary-light w-5 h-5' />
                 <div>
                   <div className='text-sm text-gray-500'>Requested on</div>
                   <div className='font-medium'>{fmtDate(pr?.created_at)}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className='space-y-3'>
+              <div className='space-y-3'>
+                <div className='flex items-center gap-3'>
+                  <HiDocumentText className='text-secondary-light w-5 h-5' />
+                  <div>
+                    <div className='text-sm text-gray-500'>Proforma</div>
+                    <div>
+                      {pr?.proforma ? (
+                        <a className='text-primary-color underline' target='_blank' rel='noreferrer' href={pr.proforma}>
+                          View Proforma
+                        </a>
+                      ) : (
+                        <span className='text-gray-500'>No proforma</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <HiDocumentText className='text-secondary-light w-5 h-5' />
+                  <div>
+                    <div className='text-sm text-gray-500'>Purchase Order</div>
+                    <div>
+                      {pr?.purchase_order ? (
+                        <a
+                          className='text-primary-color underline'
+                          target='_blank'
+                          rel='noreferrer'
+                          href={pr.purchase_order}
+                        >
+                          View Purchase Order
+                        </a>
+                      ) : (
+                        <span className='text-gray-500'>No purchase order</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <HiDocumentText className='text-secondary-light w-5 h-5' />
+                  <div>
+                    <div className='text-sm text-gray-500'>Receipt</div>
+                    <div>
+                      {pr?.receipt ? (
+                        <a className='text-primary-color underline' target='_blank' rel='noreferrer' href={pr.receipt}>
+                          View Receipt
+                        </a>
+                      ) : (
+                        <span className='text-gray-500'>No receipt</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
