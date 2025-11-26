@@ -23,12 +23,7 @@ export default function TableRow({ data, headers, dropdownOptions }) {
     );
 
     return (
-      <td
-        key={index}
-        className={`text-gray-500 px-6 py-2 ${index !== headers.length ? 'text-left' : 'text-right'} ${
-          index + 1 === 1 ? 'font-medium' : ''
-        } `}
-      >
+      <td key={index} className={`text-gray-500 px-6 py-2 ${index !== headers.length ? 'text-left' : 'text-right'} `}>
         {rowContent}
       </td>
     );
