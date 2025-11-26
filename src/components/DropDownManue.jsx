@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { HiEllipsisVertical, HiEye, HiPencil, HiTrash } from 'react-icons/hi2';
 import { MdOutlineImage } from 'react-icons/md';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import useOutsideClick from '../hooks/useOutsideClick';
 
 export default function DropDownManue({ resourceId, dropdownOptions }) {
@@ -13,6 +13,7 @@ export default function DropDownManue({ resourceId, dropdownOptions }) {
   const handleClick = () => {
     setIsOpen((curr) => !curr);
   };
+  const navigate = useNavigate();
 
   return (
     <nav className='w-fit relative z-50'>
@@ -37,9 +38,9 @@ export default function DropDownManue({ resourceId, dropdownOptions }) {
               <button
                 className='px-6 py-3 size-full text-start  flex items-center gap-2'
                 onClick={() => {
-                  searchParams.append('modal', 'details');
-                  searchParams.append('resource_id', resourceId);
-                  setSearchParams(searchParams);
+                  // Navigate to the details page instead of using modal search params
+                  navigate(`/account/requests/${resourceId}`);
+                  setIsOpen(false);
                 }}
               >
                 <HiEye className='size-[1rem] text-gray-400 group-hover:text-white' /> Details

@@ -9,6 +9,7 @@ export default function Button({ children, icon, loading, size = 'md', variant =
     primary: `bg-primary hover:bg-primary-light text-white`,
     tertiary: `bg-gray-100 hover:bg-gray-200 text-gray-500 border`,
     secondary: `bg-secondary hover:bg-secondary-light text-white`,
+    danger: `bg-red-600 hover:bg-red-700 text-white`,
   };
 
   return (
