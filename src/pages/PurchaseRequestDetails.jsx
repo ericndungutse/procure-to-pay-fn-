@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
 import Prompt from '../components/Prompt';
+import ImageUploader from '../components/ImageUploader';
 import StatusBadge from '../components/StatusBadge';
 import { useUser } from '../hooks/useUser';
 import {
@@ -13,6 +14,8 @@ import {
   fetchPurchaseRequest,
   rejectPurchaseRequest,
 } from '../service/purchaseRequest.service';
+import { uploadReceipt } from '../service/purchaseRequest.service';
+import { uploadProformaToSupabase } from '../service/supabase.service';
 
 export default function PurchaseRequestDetails() {
   const { id } = useParams();
@@ -25,6 +28,8 @@ export default function PurchaseRequestDetails() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null); // 'approve' | 'reject'
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['purchaseRequest', id],
@@ -258,6 +263,22 @@ export default function PurchaseRequestDetails() {
                         <a className='text-primary-color underline' target='_blank' rel='noreferrer' href={pr.receipt}>
                           View Receipt
                         </a>
+                      ) : pr?.status === 'approved' ? (
+                        // Approved but no receipt — only creator can upload
+                        // Allow the creator (compare IDs as strings) or users with the 'staff' role
+                        String(currentUser?.id) === String(pr?.created_by) || currentUser?.role === 'staff' ? (
+                          <button
+                            type='button'
+                            onClick={() => setUploadOpen(true)}
+                            className='text-primary-color underline text-sm'
+                          >
+                            Upload receipt
+                          </button>
+                        ) : (
+                          <button type='button' disabled className='text-gray-400 text-sm cursor-not-allowed'>
+                            Upload receipt
+                          </button>
+                        )
                       ) : (
                         <span className='text-gray-500'>No receipt</span>
                       )}
@@ -309,6 +330,38 @@ export default function PurchaseRequestDetails() {
             message={`Are you sure you want to ${confirmAction} this request?`}
             yesText={confirmAction === 'approve' ? 'Approve' : 'Reject'}
             noText='Cancel'
+          />
+        </Modal>
+      )}
+
+      {uploadOpen && (
+        <Modal>
+          <ImageUploader
+            closeModal={() => setUploadOpen(false)}
+            uploading={uploading}
+            onSubmit={async (files) => {
+              setUploading(true);
+              try {
+                // use first file only
+                const file = files && files[0];
+                if (!file) throw new Error('No file selected');
+
+                // upload to Supabase bucket (same bucket used for proforma)
+                const receiptUrl = await uploadProformaToSupabase(file);
+
+                // notify backend with JSON body { receipt_url }
+                await uploadReceipt(token, id, { receipt_url: receiptUrl });
+
+                toast.success('Receipt uploaded');
+                queryClient.invalidateQueries(['purchaseRequest', id]);
+                queryClient.invalidateQueries(['purchaseRequests']);
+                setUploadOpen(false);
+              } catch (err) {
+                toast.error(err.message || 'Upload failed');
+              } finally {
+                setUploading(false);
+              }
+            }}
           />
         </Modal>
       )}

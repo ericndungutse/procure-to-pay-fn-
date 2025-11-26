@@ -50,6 +50,8 @@ export const logoutApi = async () => {
     try {
       token = localStorage.getItem('token');
     } catch (e) {
+      console.log(e);
+
       // localStorage unavailable
     }
 
