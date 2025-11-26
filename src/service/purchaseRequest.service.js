@@ -23,7 +23,7 @@ export const createPurchaseRequest = async (token, body) => {
     });
 
     // Return created request (shape depends on backend)
-    return response.data.data || response.data;
+    return response.data;
   } catch (error) {
     const msg = error?.response?.data?.error || error?.response?.data || error.message;
     throw new Error(msg);
@@ -38,7 +38,7 @@ export const fetchPurchaseRequest = async (token, id) => {
       },
     });
 
-    return response.data.data || response.data;
+    return response.data;
   } catch (error) {
     const msg = error?.response?.data?.error || error?.response?.data || error.message;
     throw new Error(msg);
@@ -48,7 +48,7 @@ export const fetchPurchaseRequest = async (token, id) => {
 export const approvePurchaseRequest = async (token, id) => {
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/requests/${id}/approve/`,
+      `${import.meta.env.VITE_BACKEND_URL}/requests/${id}/approve`,
       {},
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -64,7 +64,7 @@ export const approvePurchaseRequest = async (token, id) => {
 
 export const rejectPurchaseRequest = async (token, id, payload = {}) => {
   try {
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/requests/${id}/reject/`, payload, {
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/requests/${id}/reject`, payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

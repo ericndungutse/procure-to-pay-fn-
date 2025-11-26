@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import Heading from '../components/Heading';
-import VerticalFormRow from '../components/VerticalFormRow';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { HiCalendar, HiChatBubbleLeft, HiCurrencyDollar, HiDocumentText, HiUser } from 'react-icons/hi2';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
 import Prompt from '../components/Prompt';
 import StatusBadge from '../components/StatusBadge';
-import { HiUser, HiCalendar, HiCurrencyDollar, HiDocumentText, HiChatBubbleLeft } from 'react-icons/hi2';
 import { useUser } from '../hooks/useUser';
 import {
-  fetchPurchaseRequest,
   approvePurchaseRequest,
+  fetchPurchaseRequest,
   rejectPurchaseRequest,
 } from '../service/purchaseRequest.service';
 
@@ -25,28 +24,40 @@ export default function PurchaseRequestDetails() {
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null); // 'approve' | 'reject'
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['purchaseRequest', id],
     queryFn: () => fetchPurchaseRequest(token, id),
-    enabled: !!id && !!user?.token,
+    enabled: !!id && !!token,
   });
 
   const approveMutation = useMutation({
     mutationFn: () => approvePurchaseRequest(token, id),
-    onSuccess: () => {
+    onSuccess: (res) => {
+      // res expected to be full response with message
+      const message = res?.message || 'Purchase request approved';
+      toast.success(message);
       queryClient.invalidateQueries(['purchaseRequests']);
       queryClient.invalidateQueries(['purchaseRequest', id]);
       navigate('/account/requests');
+    },
+    onError: (err) => {
+      toast.error(err.message || 'Failed to approve');
     },
   });
 
   const rejectMutation = useMutation({
     mutationFn: (payload) => rejectPurchaseRequest(token, id, payload),
-    onSuccess: () => {
+    onSuccess: (res) => {
+      const message = res?.message || 'Purchase request rejected';
+      toast.success(message);
       queryClient.invalidateQueries(['purchaseRequests']);
       queryClient.invalidateQueries(['purchaseRequest', id]);
       navigate('/account/requests');
+    },
+    onError: (err) => {
+      toast.error(err.message || 'Failed to reject');
     },
   });
 
@@ -102,7 +113,12 @@ export default function PurchaseRequestDetails() {
     );
   if (error) return <div className='text-red-600'>Error: {error.message}</div>;
 
-  const pr = data?.purchase_request || data;
+  // Normalize server response shapes to always get the purchase_request object
+  const pr =
+    data?.purchase_request || // case: query returned { purchase_request: {...} }
+    data?.data?.purchase_request || // case: returned wrapper { data: { purchase_request: {...} } }
+    data?.data || // case: fetchPurchaseRequest returned data object directly
+    data;
 
   const canApprove = currentUser?.role && currentUser.role.startsWith('approver-level');
 
@@ -117,12 +133,20 @@ export default function PurchaseRequestDetails() {
   }
 
   async function handleConfirm() {
-    setConfirmOpen(false);
-    if (confirmAction === 'approve') {
-      approveMutation.mutate();
-    } else if (confirmAction === 'reject') {
-      // Optionally collect a reason — for now send empty payload
-      rejectMutation.mutate({ reason: 'Rejected via UI' });
+    // Use local loading state and mutateAsync to ensure Prompt updates immediately
+    setConfirmLoading(true);
+    try {
+      if (confirmAction === 'approve') {
+        await approveMutation.mutateAsync();
+      } else if (confirmAction === 'reject') {
+        await rejectMutation.mutateAsync({ reason: 'Rejected via UI' });
+      }
+    } catch (err) {
+      // errors are handled in onError callbacks (toasts), but ensure we don't crash
+      console.debug('Confirm action error', err);
+    } finally {
+      setConfirmLoading(false);
+      setConfirmOpen(false);
     }
   }
 
@@ -263,7 +287,7 @@ export default function PurchaseRequestDetails() {
         <Button variant='tertiary' onClick={() => navigate('/account/requests')}>
           Back
         </Button>
-        {canApprove && pr?.status !== 'approved' && (
+        {canApprove && !['approved', 'rejected'].includes(pr?.status) && (
           <>
             <Button variant='primary' onClick={handleApproveClick} loading={approveMutation.isLoading}>
               Approve
@@ -279,7 +303,7 @@ export default function PurchaseRequestDetails() {
         <Modal>
           <Prompt
             onConfirm={handleConfirm}
-            disabled={approveMutation.isLoading || rejectMutation.isLoading}
+            isLoading={confirmLoading}
             onCloseModel={() => setConfirmOpen(false)}
             headingText={confirmAction === 'approve' ? 'Approve request' : 'Reject request'}
             message={`Are you sure you want to ${confirmAction} this request?`}
