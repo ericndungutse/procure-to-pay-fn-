@@ -1,6 +1,9 @@
-import LoadingSpinner from '../../components/LoadingSpinner';
 import Table from '../../components/table/Table';
+import TableSkeleton from '../../components/TableSkeleton';
 import { useFetchPurchaseRequests } from '../../hooks/useFetchPurchaseRequests';
+import { useUser } from '../../hooks/useUser';
+import Button from '../../components/Button';
+import { HiPlus } from 'react-icons/hi2';
 
 // Table fields
 const fields = [
@@ -14,13 +17,27 @@ const fields = [
 
 export default function PurchaseRequestsList() {
   const { data, isLoading } = useFetchPurchaseRequests();
+  const {
+    user: { user },
+  } = useUser();
 
-  return isLoading ? (
-    <LoadingSpinner />
-  ) : (
-    <>
-      <Table headers={fields} data={data} dropdownOptions='details,approve,reject' />
-      <div className='flex justify-between mt-4'></div>
-    </>
+  return (
+    <div className='flex flex-col gap-3 w-full'>
+      {/* Add Purchase Request Button (only for staff) */}
+      {user.role === 'staff' && (
+        <div className='flex justify-end mb-2'>
+          <Button icon={<HiPlus />} size='md' variant='primary'>
+            Add New
+          </Button>
+        </div>
+      )}
+
+      {/* Table or Skeleton */}
+      {isLoading ? (
+        <TableSkeleton headers={fields} />
+      ) : (
+        <Table headers={fields} data={data} dropdownOptions='details,approve,reject' />
+      )}
+    </div>
   );
 }
