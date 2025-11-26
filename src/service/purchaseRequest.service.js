@@ -74,3 +74,20 @@ export const rejectPurchaseRequest = async (token, id, payload = {}) => {
     throw new Error(msg);
   }
 };
+
+export const uploadReceipt = async (token, id, formData) => {
+  try {
+    // Expect a JSON body like { receipt_url: 'https://...' }
+    const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/requests/${id}/upload-receipt`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    const msg = error?.response?.data?.error || error?.response?.data || error.message;
+    throw new Error(msg);
+  }
+};

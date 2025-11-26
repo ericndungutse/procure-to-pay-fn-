@@ -20,12 +20,8 @@ const ImageUploader = ({ closeModal, multiple = true, onSubmit, uploading }) => 
       return;
     }
 
-    const formData = new FormData();
-    for (let i = 0; i < selectedFiles.length; i++) {
-      formData.append(`avatar`, selectedFiles[i]);
-    }
-
-    onSubmit(formData);
+    // Pass the FileList back to the caller so they can choose how to handle upload.
+    onSubmit(selectedFiles);
   };
 
   return (
